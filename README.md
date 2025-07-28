@@ -167,4 +167,4 @@ Checkpoints are saved to **models/** as `policy_<algo>_iterXXXX.pt`.
 
 ## 📝 License
 
-[MIT](LICENSE) © 2025 José Pablo Pérez Pérez
+[MIT](LICENSE) © 2025 Juan Pablo Pérez Vargas
