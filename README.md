@@ -37,7 +37,7 @@ Includes **gap‑out + fuzzy** hybrids, ready‑to‑train scripts, Docker image
 ## ⚡ Quick start (local)
 
 ```bash
-git clone https://github.com/<your-user>/sumo-rl.git
+git clone https://github.com/juanpablo-perez/sumo-marl-project.git
 cd sumo-rl
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
