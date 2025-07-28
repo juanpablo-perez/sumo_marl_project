@@ -1,0 +1,35 @@
+# syntax=docker/dockerfile:1
+# ------------------------------------------------------------------
+# Imagen GPU (CUDA 12 + PyTorch 2.3 + Ray) para CEDIA HPC
+# ------------------------------------------------------------------
+FROM nvcr.io/nvidia/pytorch:24.05-py3
+
+ARG SUMO_VERSION=v1_22_0
+
+# -------- sistema + SUMO headless ---------------------------------
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        build-essential cmake git \
+        libgdal-dev libproj-dev libffi-dev \
+        libxml2-dev libxerces-c-dev libfox-1.6-dev libgmp-dev && \
+    git clone --branch ${SUMO_VERSION} https://github.com/eclipse-sumo/sumo.git && \
+    cd sumo && mkdir build && cd build && \
+    cmake -DUSE_GL=OFF -DBUILD_GUI=OFF -DCMAKE_INSTALL_PREFIX=/opt/sumo .. && \
+    make -j$(nproc) && make install && \
+    cd / && rm -rf /sumo && \
+    apt-get purge -y git build-essential cmake && \
+    apt-get autoremove -y && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# -------- Python deps (CUDA wheels vienen en la base) --------------
+COPY requirements.txt /tmp/requirements.txt
+RUN python -m pip install --upgrade --no-cache-dir pip && \
+    pip install --no-cache-dir -r /tmp/requirements.txt && \
+    rm -rf /root/.cache/pip
+
+ENV SUMO_HOME=/opt/sumo \
+    PATH=/opt/sumo/bin:$PATH \
+    RAY_DISABLE_DASHBOARD=1 \
+    PYTHONUNBUFFERED=1
+
+WORKDIR /workspace
+CMD ["bash"]

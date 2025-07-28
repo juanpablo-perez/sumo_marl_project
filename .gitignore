@@ -1,0 +1,6 @@
+__pycache__/
+outputs/
+*.log
+*.tar.gz
+*.sqsh
+sumo_runs/
